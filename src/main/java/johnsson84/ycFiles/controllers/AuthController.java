@@ -15,16 +15,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -86,6 +84,7 @@ public class AuthController {
                     userService.findUserByEmail(userDetails.getUsername()).getRoles()
             );
 
+            System.out.println("Logged in!");
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
@@ -93,6 +92,7 @@ public class AuthController {
 
 
         } catch (AuthenticationException e) {
+            System.out.println("Authentication failed: " + e.getMessage());
             // Aauthentication failed
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
@@ -131,5 +131,31 @@ public class AuthController {
         );
 
         return ResponseEntity.ok(regResponse);
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<?> checkAuthentication() {
+        // Get authentication
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Return not authenticated
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+
+        // Retrive 'UserDetails' object from authentication context.
+        UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+
+        // Get user from DB
+        User user = userService.findUserByEmail(userDetails.getUsername());
+
+        // Return authenticated user
+        return ResponseEntity.ok(new AuthResponse(
+                "Authenticated",
+                user.getEmail(),
+                user.getRoles()
+        ));
     }
 }
