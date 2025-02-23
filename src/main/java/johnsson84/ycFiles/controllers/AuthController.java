@@ -70,7 +70,7 @@ public class AuthController {
                     .httpOnly(true)
                     .secure(false) // OBS! set to true in production with HTTPS
                     .path("/")
-                    .maxAge(10 * 60 * 60) // 10 hours
+                    .maxAge(600)
                     .sameSite("Strict") // "Strict", "Lax", or "None"
                     .build();
 
@@ -157,5 +157,20 @@ public class AuthController {
                 user.getEmail(),
                 user.getRoles()
         ));
+    }
+
+    // Logout
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        ResponseCookie cookie = ResponseCookie.from("jwt", null)
+                .path("/")
+                .sameSite("Strict")
+                .maxAge(0)
+                .httpOnly(true)
+                .build();
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body("Logout successful");
     }
 }
