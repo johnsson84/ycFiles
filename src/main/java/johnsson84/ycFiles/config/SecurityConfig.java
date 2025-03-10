@@ -41,18 +41,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        // fyll på här när ni lägger till controllers, vill ni ha rollbaserat
-                        // chaina på hasRole eller hasAnyRole
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                // fyll på här när ni lägger till controllers, vill ni ha rollbaserat
+                // chaina på hasRole eller hasAnyRole
 
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/error").permitAll() // ONLY FOR DEBUGGING
-                        .anyRequest().authenticated())
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/error").permitAll() // ONLY FOR DEBUGGING
+                .anyRequest().authenticated())
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

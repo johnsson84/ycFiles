@@ -47,6 +47,8 @@ public class AuthController {
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request,
                                    HttpServletResponse response) {
 
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+
         try {
             // authenticate the user
             Authentication authentication = authenticationManager.authenticate(
@@ -70,8 +72,8 @@ public class AuthController {
                     .httpOnly(true)
                     .secure(false) // OBS! set to true in production with HTTPS
                     .path("/")
-                    .maxAge(600)
-                    .sameSite("Strict") // "Strict", "Lax", or "None"
+                    .maxAge(1200)
+                    .sameSite("Lax") // "Strict", "Lax", or "None"
                     .build();
 
             // add cookie to response
