@@ -72,8 +72,8 @@ public class AuthController {
                     .httpOnly(true)
                     .secure(false) // OBS! set to true in production with HTTPS
                     .path("/")
-                    .maxAge(1200)
-                    .sameSite("Lax") // "Strict", "Lax", or "None"
+                    .maxAge(10 * 60 * 60)
+                    .sameSite("Strict") // "Strict", "Lax", or "None"
                     .build();
 
             // add cookie to response
