@@ -32,18 +32,24 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     // validate token
     public boolean validateToken(String token, UserDetails userDetails) {
+        String username = "null";
         try {
-            String username = extractUsername(token);
+            username = extractUsername(token);
             return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
         } catch (JwtException | IllegalArgumentException e) {
-            // Log the exception
+            if (!username.equals(userDetails.getUsername())) {
+                System.out.println("Token username mismatch: " + username + " vs " + userDetails.getUsername());
+            }
+            if (isTokenExpired(token)) {
+                System.out.println("Token expired");
+            }
             return false;
         }
     }
@@ -62,15 +68,10 @@ public class JwtUtil {
 
     // extract all claims
     private Claims extractAllClaims(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (JwtException e) {
-            System.out.println("Error parsing JWT: " + e.getMessage());
-            throw e;
-        }
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
