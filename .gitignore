@@ -1,4 +1,5 @@
 application.properties
+files/
 
 /target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -201,5 +202,3 @@ README.html
 *.iml
 .idea
 .exercism
-
-files/

@@ -135,8 +135,8 @@ public class AuthController {
         return ResponseEntity.ok(regResponse);
     }
 
-    @GetMapping("/check")
-    public ResponseEntity<?> checkAuthentication() {
+    @GetMapping("/check/{userToCheck}")
+    public ResponseEntity<?> checkAuthentication(@PathVariable String userToCheck) {
         // Get authentication
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -152,6 +152,11 @@ public class AuthController {
 
         // Get user from DB
         User user = userService.findUserByEmail(userDetails.getUsername());
+
+        // check username
+        if (!userToCheck.equals(user.getEmail())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
 
         // Return authenticated user
         return ResponseEntity.ok(new AuthResponse(
