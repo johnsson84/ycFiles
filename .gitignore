@@ -201,3 +201,5 @@ README.html
 *.iml
 .idea
 .exercism
+
+files/
