@@ -1,6 +1,8 @@
 package johnsson84.ycFiles.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -49,6 +51,17 @@ public class FileService {
 
         String[] files = directory.list();
         return files;
+    }
+
+    // Delete a file from a folder
+    public String deleteFile(String user, String folder, String fileName) {
+        String filePath = String.format("%s/files/%s/%s/%s", System.getProperty("user.dir"), user, folder, fileName);
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return "File does not exist";
+        }
+        file.delete();
+        return "File deleted successfully";
     }
 
     ///////////// FOLDERS /////////////
