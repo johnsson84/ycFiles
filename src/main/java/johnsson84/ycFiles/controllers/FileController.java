@@ -36,6 +36,16 @@ public class FileController {
         return fileService.getFiles(user, folder);
     }
 
+    // Delete a file from a folder
+    @DeleteMapping("/delete/{user}/{folder}/{file}")
+    public ResponseEntity<?> deleteFile(@PathVariable("user") String user, @PathVariable("folder") String folder, @PathVariable("file") String file) {
+        try {
+            return ResponseEntity.ok().body(fileService.deleteFile(user, folder, file));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error while deleting file");
+        }
+    }
+
     // FOLDERS
     // Add a folder
     @PostMapping("/addFolder/{user}/{folderName}")
