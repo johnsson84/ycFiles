@@ -1,6 +1,7 @@
 package johnsson84.ycFiles.controllers;
 
 import johnsson84.ycFiles.service.FileService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ public class FileController {
         this.fileService = fileService;
     }
 
+    // FILES
     // Upload a file
     @PostMapping("/upload/{user}/{folder}")
     public ResponseEntity<?> uploadFile(@PathVariable("user") String user, @PathVariable("folder") String folder, @RequestParam("file") MultipartFile file) throws IOException {
@@ -34,6 +36,7 @@ public class FileController {
         return fileService.getFiles(user, folder);
     }
 
+    // FOLDERS
     // Add a folder
     @PostMapping("/addFolder/{user}/{folderName}")
     public ResponseEntity<?> addFolder(@PathVariable("user") String user, @PathVariable("folderName") String folderName) {
@@ -44,5 +47,15 @@ public class FileController {
     @GetMapping("/getFolders/{user}")
     public List<String> getFolders(@PathVariable("user") String user) {
         return fileService.getFolders(user);
+    }
+
+    // Delete a folder
+    @DeleteMapping("/delete/{user}/{folder}")
+    public ResponseEntity<?> deleteFile(@PathVariable("user") String user, @PathVariable("folder") String folder) throws Exception {
+        try {
+            return ResponseEntity.ok(fileService.deleteFolder(user, folder));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

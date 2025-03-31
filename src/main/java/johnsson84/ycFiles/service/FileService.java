@@ -11,6 +11,8 @@ import java.util.List;
 @Service
 public class FileService {
 
+    ///////////// FILES /////////////
+    // Upload a file
     public String uploadFile(String user, String folder, MultipartFile file) {
         // Save path
         String userMail = !user.isEmpty() ? user : "noname";
@@ -36,6 +38,7 @@ public class FileService {
         return fileUploadStatus;
     }
 
+    // List files from a folder
     public String[] getFiles(String user, String folder) {
         String folderPath = String.format("%s/files/%s/%s/", System.getProperty("user.dir"), user, folder);
 
@@ -48,6 +51,8 @@ public class FileService {
         return files;
     }
 
+    ///////////// FOLDERS /////////////
+    // Add a folder
     public String addFolder(String user, String folderName) {
         // Set folderpath
         String fodlerpath = String.format("%s/files/%s/%s/", System.getProperty("user.dir"), user, folderName);
@@ -62,6 +67,7 @@ public class FileService {
         return response;
     }
 
+    // List folders from a user
     public List<String> getFolders(String user) {
         String folderPath = String.format("%s/files/%s/", System.getProperty("user.dir"), user);
         File userfolder = new File(folderPath);
@@ -79,5 +85,23 @@ public class FileService {
         }
 
         return folders;
+    }
+
+    // Delete a folder with its files
+    public String deleteFolder(String user, String folder) throws Exception {
+        String folderPath = String.format("%s/files/%s/%s", System.getProperty("user.dir"), user, folder);
+        File folderToDelete = new File(folderPath);
+        if (folderToDelete.exists() && folderToDelete.isDirectory()) {
+            File[] files = folderToDelete.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    file.delete();
+                }
+            }
+            folderToDelete.delete();
+        } else {
+            throw new Exception("Folder does not exist");
+        }
+        return "Folder deleted successfully";
     }
 }
