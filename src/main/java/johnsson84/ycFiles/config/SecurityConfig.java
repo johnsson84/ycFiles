@@ -51,7 +51,6 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/error").permitAll() // ONLY FOR DEBUGGING
-                .requestMatchers("/files/**").permitAll()
                 .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
