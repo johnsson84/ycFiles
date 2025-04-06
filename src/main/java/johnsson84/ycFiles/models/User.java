@@ -1,33 +1,32 @@
 package johnsson84.ycFiles.models;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Set;
 
-@Entity
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
+@Document(collection = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private String email;
     private String password;
     private Set<Role> roles;
 
     public User() {}
 
-    public User(Long id, String email, String password, Set<Role> roles) {
+    public User(String id, String email, String password, Set<Role> roles) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.roles = roles;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -47,8 +47,6 @@ public class AuthController {
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request,
                                    HttpServletResponse response) {
 
-        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
-
         try {
             // authenticate the user
             Authentication authentication = authenticationManager.authenticate(
