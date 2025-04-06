@@ -1,5 +1,8 @@
 package johnsson84.ycFiles.service;
 
+import jdk.jfr.ContentType;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -7,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +67,26 @@ public class FileService {
         }
         file.delete();
         return "File deleted successfully";
+    }
+
+    // Download a file
+    public ResponseEntity<?> downloadFile(String user, String folder, String fileName) throws IOException {
+        String filePath = String.format("%s/files/%s/%s/%s", System.getProperty("user.dir"), user, folder, fileName);
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File does not exist");
+        }
+
+        // Media type
+        String contentType = Files.probeContentType(file.toPath());
+        MediaType mediaType = (contentType != null) ? MediaType.parseMediaType(contentType) : MediaType.APPLICATION_OCTET_STREAM;
+
+        // Read file
+        byte[] data = Files.readAllBytes(file.toPath());
+
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .body(data);
     }
 
     ///////////// FOLDERS /////////////

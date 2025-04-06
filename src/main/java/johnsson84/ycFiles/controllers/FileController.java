@@ -46,6 +46,16 @@ public class FileController {
         }
     }
 
+    // Download a file
+    @GetMapping("/download/{user}/{folder}/{file}")
+    public ResponseEntity<?> downloadFile(@PathVariable("user") String user, @PathVariable("folder") String folder, @PathVariable("file") String file) {
+        try {
+            return fileService.downloadFile(user, folder, file);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error while downloading file");
+        }
+    }
+
     // FOLDERS
     // Add a folder
     @PostMapping("/addFolder/{user}/{folderName}")

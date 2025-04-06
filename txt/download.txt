@@ -1,0 +1,33 @@
+// Java Endpoint (e.g., using Spring Boot)
+
+@GetMapping("/download/{filename}")
+public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
+  File file = new File("/path/to/your/files/" + filename); // Replace with your actual file path
+
+  // Set content type based on file extension
+  MediaType mediaType = fileExtensionToMediaType(filename);
+
+  // Return the file as an HTTP response
+  return ResponseEntity.ok()
+                      .header(HttpHeaders.CONTENT_TYPE, mediaType.toString())
+                      .body(new Resource(file));
+}
+
+// Helper function to determine the content type
+private MediaType fileExtensionToMediaType(String filename) {
+    // Implement logic to determine the content type based on file extension.
+    // Example: ".pdf" -> MediaType.APPLICATION_PDF, ".jpg" -> MediaType.APPLICATION_JPEG, etc.
+}
+
+// Helper class to wrap the file for ResponseEntity
+private static class Resource {
+    private File file;
+
+    public Resource(File file) {
+        this.file = file;
+    }
+
+    public byte[] getBytes() throws IOException {
+        return Files.readAllBytes(this.file);
+    }
+}
